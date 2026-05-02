@@ -4,6 +4,11 @@ export default {
   darkMode: ["class"],
   content: ["./pages/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./app/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
   prefix: "",
+  safelist: [
+    "bg-skill-green", "bg-skill-yellow", "bg-skill-blue", "bg-skill-orange", "bg-skill-purple",
+    "text-skill-green", "text-skill-yellow", "text-skill-blue", "text-skill-orange", "text-skill-purple",
+    "bg-skill-green/10", "bg-skill-yellow/10", "bg-skill-blue/10", "bg-skill-orange/10", "bg-skill-purple/10",
+  ],
   theme: {
     container: {
       center: true,

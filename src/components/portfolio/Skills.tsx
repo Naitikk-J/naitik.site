@@ -1,41 +1,46 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
-import { Code2, Sparkles, Layers, Cpu, Boxes } from "lucide-react";
-
-const skills = [
-  {
-    name: "Engineering",
-    icon: Code2,
-    bg: "bg-skill-green",
-    glow: "hover:shadow-[0_20px_60px_-15px_hsl(var(--skill-green)/0.55)]",
-  },
-  {
-    name: "Design",
-    icon: Sparkles,
-    bg: "bg-skill-yellow",
-    glow: "hover:shadow-[0_20px_60px_-15px_hsl(var(--skill-yellow)/0.55)]",
-  },
-  {
-    name: "AI Systems",
-    icon: Cpu,
-    bg: "bg-skill-blue",
-    glow: "hover:shadow-[0_20px_60px_-15px_hsl(var(--skill-blue)/0.55)]",
-  },
-  {
-    name: "Product",
-    icon: Layers,
-    bg: "bg-skill-orange",
-    glow: "hover:shadow-[0_20px_60px_-15px_hsl(var(--skill-orange)/0.55)]",
-  },
-  {
-    name: "Infrastructure",
-    icon: Boxes,
-    bg: "bg-skill-purple",
-    glow: "hover:shadow-[0_20px_60px_-15px_hsl(var(--skill-purple)/0.55)]",
-  },
-];
 
 const ease = [0.22, 1, 0.36, 1] as const;
+
+const skillCategories = [
+  {
+    title: "Languages",
+    color: "bg-skill-green",
+    borderHover: "hover:border-skill-green/30",
+    items: ["C++", "JavaScript (ES6+)", "Python", "TypeScript"],
+  },
+  {
+    title: "Frontend / Mobile",
+    color: "bg-skill-blue",
+    borderHover: "hover:border-skill-blue/30",
+    items: ["React", "React Native", "Three.js", "Tailwind CSS", "Vite"],
+  },
+  {
+    title: "Backend & APIs",
+    color: "bg-skill-orange",
+    borderHover: "hover:border-skill-orange/30",
+    items: ["Node.js", "Express.js", "Socket.io", "REST APIs", "Redis", "JWT Auth"],
+  },
+  {
+    title: "Database & Cloud",
+    color: "bg-skill-purple",
+    borderHover: "hover:border-skill-purple/30",
+    items: ["MongoDB", "PostgreSQL", "Firebase", "Supabase", "AWS S3"],
+  },
+  {
+    title: "Blockchain",
+    color: "bg-skill-yellow",
+    borderHover: "hover:border-skill-yellow/30",
+    items: ["Ethereum", "Solidity", "Hardhat", "Web3.js"],
+  },
+  {
+    title: "Tools",
+    color: "bg-skill-green",
+    borderHover: "hover:border-skill-green/30",
+    items: ["Git", "Docker", "Postman", "Vercel", "Render", "GitHub Actions"],
+  },
+];
 
 const Skills = () => {
   const ref = useRef<HTMLElement>(null);
@@ -44,12 +49,8 @@ const Skills = () => {
     offset: ["start end", "end start"],
   });
 
-  // Heading slides in from left, fades as it leaves
-  const headingX = useTransform(scrollYProgress, [0, 0.4], [-80, 0]);
-  const headingOpacity = useTransform(scrollYProgress, [0, 0.3, 0.85, 1], [0, 1, 1, 0.4]);
-
-  // Whole card row drifts horizontally as you scroll through
-  const rowX = useTransform(scrollYProgress, [0, 1], ["8%", "-8%"]);
+  const headingX = useTransform(scrollYProgress, [0, 0.35], [-80, 0]);
+  const headingOpacity = useTransform(scrollYProgress, [0, 0.2, 0.85, 1], [0, 1, 1, 0.3]);
 
   return (
     <section
@@ -57,67 +58,71 @@ const Skills = () => {
       id="skills"
       className="relative w-full overflow-hidden px-6 py-24 md:py-32 lg:py-40"
     >
-      <div className="mx-auto max-w-7xl">
+      {/* Background accents */}
+      <div className="pointer-events-none absolute left-[10%] top-[20%] h-[30vmin] w-[30vmin] rounded-full bg-skill-purple/[0.02] blur-[80px] animate-float-orb" />
+      <div className="pointer-events-none absolute right-[5%] bottom-[20%] h-[25vmin] w-[25vmin] rounded-full bg-skill-green/[0.02] blur-[70px] animate-float-orb-reverse" />
+
+      <div className="mx-auto max-w-5xl">
         <motion.div
           style={{ x: headingX, opacity: headingOpacity }}
-          className="mb-16 flex flex-col items-center text-center md:mb-24"
+          className="mb-16 md:mb-20"
         >
-          <span className="mb-4 text-[10px] font-medium tracking-[0.3em] text-muted-foreground">
+          <motion.span
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, ease }}
+            className="mb-4 block text-[10px] font-medium tracking-[0.3em] text-muted-foreground"
+          >
             — SKILLS
-          </span>
-          <h2 className="text-balance text-4xl font-semibold tracking-tight text-foreground sm:text-5xl md:text-6xl">
-            A toolkit refined<br className="hidden sm:block" /> over years of craft.
+          </motion.span>
+          <h2 className="text-balance text-3xl font-semibold tracking-tight text-foreground sm:text-4xl md:text-5xl">
+            A toolkit refined over{" "}
+            <span className="shimmer-text">years of craft</span>.
           </h2>
         </motion.div>
 
-        <motion.div
-          style={{ x: rowX }}
-          className="flex flex-wrap items-center justify-center gap-5 md:flex-nowrap md:gap-7"
-        >
-          {skills.map((s, i) => {
-            const Icon = s.icon;
-            return (
-              <SkillCard key={s.name} index={i} progress={scrollYProgress}>
-                <div
-                  className={`relative flex h-36 w-36 items-center justify-center rounded-3xl ${s.bg} shadow-xl transition-all duration-500 ease-out group-hover:-translate-y-2 group-hover:scale-[1.04] group-hover:rotate-[-2deg] ${s.glow} sm:h-40 sm:w-40 md:h-44 md:w-44`}
-                >
-                  <Icon
-                    className="h-14 w-14 text-background sm:h-16 sm:w-16"
-                    strokeWidth={2.25}
-                  />
-                </div>
-                <p className="mt-4 text-center text-[11px] font-medium tracking-[0.2em] text-muted-foreground transition-colors duration-300 group-hover:text-foreground">
-                  {s.name.toUpperCase()}
-                </p>
-              </SkillCard>
-            );
-          })}
-        </motion.div>
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {skillCategories.map((cat, i) => (
+            <motion.div
+              key={cat.title}
+              initial={{ opacity: 0, y: 40, scale: 0.96 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ duration: 0.6, ease, delay: i * 0.07 }}
+              whileHover={{ y: -4 }}
+              className={`glass-card group rounded-2xl p-6 ${cat.borderHover}`}
+            >
+              <div className="mb-5 flex items-center gap-3">
+                <motion.div
+                  className={`h-2 w-2 rounded-full ${cat.color}`}
+                  whileHover={{ scale: 1.8 }}
+                  transition={{ type: "spring", stiffness: 500 }}
+                />
+                <h3 className="text-[11px] font-medium tracking-[0.2em] text-foreground">
+                  {cat.title.toUpperCase()}
+                </h3>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {cat.items.map((skill, j) => (
+                  <motion.span
+                    key={skill}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.4, delay: i * 0.05 + j * 0.03 }}
+                    whileHover={{ scale: 1.08, y: -2 }}
+                    className="skill-tag cursor-default rounded-lg border border-border/40 bg-secondary/50 px-3 py-1.5 text-[11px] font-medium text-muted-foreground"
+                  >
+                    {skill}
+                  </motion.span>
+                ))}
+              </div>
+            </motion.div>
+          ))}
+        </div>
       </div>
     </section>
-  );
-};
-
-const SkillCard = ({
-  index,
-  progress,
-  children,
-}: {
-  index: number;
-  progress: ReturnType<typeof useScroll>["scrollYProgress"];
-  children: React.ReactNode;
-}) => {
-  // Stagger entry by index — each card rises and fades in slightly later
-  const start = 0.1 + index * 0.06;
-  const end = start + 0.35;
-  const y = useTransform(progress, [start, end], [120, 0]);
-  const opacity = useTransform(progress, [start, end], [0, 1]);
-  const rotate = useTransform(progress, [start, end], [index % 2 === 0 ? -8 : 8, 0]);
-
-  return (
-    <motion.div style={{ y, opacity, rotate }} className="group relative">
-      {children}
-    </motion.div>
   );
 };
 
