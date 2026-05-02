@@ -1,8 +1,10 @@
 import Navbar from "@/components/portfolio/Navbar";
 import Hero from "@/components/portfolio/Hero";
 import Skills from "@/components/portfolio/Skills";
+import useLenis from "@/hooks/useLenis";
 
 const Index = () => {
+  useLenis();
   return (
     <main className="relative min-h-screen w-full overflow-x-hidden bg-background text-foreground">
       <Navbar />
