@@ -47,6 +47,13 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        skill: {
+          green: "hsl(var(--skill-green))",
+          yellow: "hsl(var(--skill-yellow))",
+          blue: "hsl(var(--skill-blue))",
+          orange: "hsl(var(--skill-orange))",
+          purple: "hsl(var(--skill-purple))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",

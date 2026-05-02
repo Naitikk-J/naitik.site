@@ -1,16 +1,18 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import Navbar from "@/components/portfolio/Navbar";
+import Hero from "@/components/portfolio/Hero";
+import Skills from "@/components/portfolio/Skills";
 
-// IMPORTANT: Fully REPLACE this with your own code
-const PlaceholderIndex = () => {
-  // PLACEHOLDER: Replace this entire return statement with the user's app.
-  // The inline background color is intentionally not part of the design system.
+const Index = () => {
   return (
-    <div className="flex min-h-screen items-center justify-center" style={{ backgroundColor: '#fcfbf8' }}>
-      <img data-lovable-blank-page-placeholder="REMOVE_THIS" src="/placeholder.svg" alt="Your app will live here!" />
-    </div>
+    <main className="relative min-h-screen w-full overflow-x-hidden bg-background text-foreground">
+      <Navbar />
+      <Hero />
+      <Skills />
+      <footer className="border-t border-border/60 px-6 py-10 text-center text-[10px] tracking-[0.3em] text-muted-foreground">
+        © 2026 DHRUVIN — CRAFTED WITH CARE
+      </footer>
+    </main>
   );
 };
-
-const Index = PlaceholderIndex;
 
 export default Index;
