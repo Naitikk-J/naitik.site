@@ -36,7 +36,7 @@ const Index = () => {
         <Divider />
         <Contact />
         <footer className="border-t border-border/40 px-6 py-10 text-center backdrop-blur-sm">
-          <p className="text-[10px] tracking-[0.3em] text-muted-foreground/60">
+          <p className="text-[10px] tracking-[0.3em] text-muted-foreground">
             © 2026 NAITIK JAIN — BUILT WITH PRECISION
           </p>
         </footer>

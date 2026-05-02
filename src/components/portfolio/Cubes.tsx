@@ -39,6 +39,7 @@ const Cubes = ({
   const rafRef = useRef<number | null>(null);
   const idleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const userActiveRef = useRef(false);
+  const rectRef = useRef<DOMRect | null>(null);
   const simPosRef = useRef({ x: 0, y: 0 });
   const simTargetRef = useRef({ x: 0, y: 0 });
   const simRAFRef = useRef<number | null>(null);
@@ -48,6 +49,15 @@ const Cubes = ({
   useEffect(() => {
     if (sceneRef.current) {
       cubesRef.current = Array.from(sceneRef.current.querySelectorAll('.cube'));
+      rectRef.current = sceneRef.current.getBoundingClientRect();
+      
+      const observer = new ResizeObserver(() => {
+        if (sceneRef.current) {
+          rectRef.current = sceneRef.current.getBoundingClientRect();
+        }
+      });
+      observer.observe(sceneRef.current);
+      return () => observer.disconnect();
     }
   }, [gridSize]);
 
@@ -101,7 +111,7 @@ const Cubes = ({
       userActiveRef.current = true;
       if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
 
-      const rect = sceneRef.current!.getBoundingClientRect();
+      const rect = rectRef.current || sceneRef.current!.getBoundingClientRect();
       const cellW = rect.width / gridSize;
       const cellH = rect.height / gridSize;
       const colCenter = (e.clientX - rect.left) / cellW;
@@ -135,7 +145,7 @@ const Cubes = ({
       userActiveRef.current = true;
       if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
 
-      const rect = sceneRef.current!.getBoundingClientRect();
+      const rect = rectRef.current || sceneRef.current!.getBoundingClientRect();
       const cellW = rect.width / gridSize;
       const cellH = rect.height / gridSize;
 
@@ -165,7 +175,7 @@ const Cubes = ({
   const onClick = useCallback(
     (e: MouseEvent) => {
       if (!rippleOnClick || !sceneRef.current) return;
-      const rect = sceneRef.current.getBoundingClientRect();
+      const rect = rectRef.current || sceneRef.current.getBoundingClientRect();
       const cellW = rect.width / gridSize;
       const cellH = rect.height / gridSize;
 
