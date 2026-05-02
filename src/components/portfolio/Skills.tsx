@@ -1,4 +1,5 @@
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
 import { Code2, Sparkles, Layers, Cpu, Boxes } from "lucide-react";
 
 const skills = [
@@ -37,14 +38,28 @@ const skills = [
 const ease = [0.22, 1, 0.36, 1] as const;
 
 const Skills = () => {
+  const ref = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"],
+  });
+
+  // Heading slides in from left, fades as it leaves
+  const headingX = useTransform(scrollYProgress, [0, 0.4], [-80, 0]);
+  const headingOpacity = useTransform(scrollYProgress, [0, 0.3, 0.85, 1], [0, 1, 1, 0.4]);
+
+  // Whole card row drifts horizontally as you scroll through
+  const rowX = useTransform(scrollYProgress, [0, 1], ["8%", "-8%"]);
+
   return (
-    <section id="skills" className="relative w-full px-6 py-24 md:py-32 lg:py-40">
+    <section
+      ref={ref}
+      id="skills"
+      className="relative w-full overflow-hidden px-6 py-24 md:py-32 lg:py-40"
+    >
       <div className="mx-auto max-w-7xl">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.7, ease }}
+          style={{ x: headingX, opacity: headingOpacity }}
           className="mb-16 flex flex-col items-center text-center md:mb-24"
         >
           <span className="mb-4 text-[10px] font-medium tracking-[0.3em] text-muted-foreground">
@@ -55,18 +70,14 @@ const Skills = () => {
           </h2>
         </motion.div>
 
-        <div className="flex flex-wrap items-center justify-center gap-5 md:gap-7">
+        <motion.div
+          style={{ x: rowX }}
+          className="flex flex-wrap items-center justify-center gap-5 md:flex-nowrap md:gap-7"
+        >
           {skills.map((s, i) => {
             const Icon = s.icon;
             return (
-              <motion.div
-                key={s.name}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-80px" }}
-                transition={{ duration: 0.6, ease, delay: i * 0.08 }}
-                className="group relative"
-              >
+              <SkillCard key={s.name} index={i} progress={scrollYProgress}>
                 <div
                   className={`relative flex h-36 w-36 items-center justify-center rounded-3xl ${s.bg} shadow-xl transition-all duration-500 ease-out group-hover:-translate-y-2 group-hover:scale-[1.04] group-hover:rotate-[-2deg] ${s.glow} sm:h-40 sm:w-40 md:h-44 md:w-44`}
                 >
@@ -78,12 +89,35 @@ const Skills = () => {
                 <p className="mt-4 text-center text-[11px] font-medium tracking-[0.2em] text-muted-foreground transition-colors duration-300 group-hover:text-foreground">
                   {s.name.toUpperCase()}
                 </p>
-              </motion.div>
+              </SkillCard>
             );
           })}
-        </div>
+        </motion.div>
       </div>
     </section>
+  );
+};
+
+const SkillCard = ({
+  index,
+  progress,
+  children,
+}: {
+  index: number;
+  progress: ReturnType<typeof useScroll>["scrollYProgress"];
+  children: React.ReactNode;
+}) => {
+  // Stagger entry by index — each card rises and fades in slightly later
+  const start = 0.1 + index * 0.06;
+  const end = start + 0.35;
+  const y = useTransform(progress, [start, end], [120, 0]);
+  const opacity = useTransform(progress, [start, end], [0, 1]);
+  const rotate = useTransform(progress, [start, end], [index % 2 === 0 ? -8 : 8, 0]);
+
+  return (
+    <motion.div style={{ y, opacity, rotate }} className="group relative">
+      {children}
+    </motion.div>
   );
 };
 
