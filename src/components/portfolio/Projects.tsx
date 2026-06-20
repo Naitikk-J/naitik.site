@@ -64,7 +64,7 @@ const projects: Project[] = [
       "GPS geofence attendance, AWS S3 asset pipeline",
       "Docker + CI/CD pipeline for zero-downtime deploys",
     ],
-    live: "https://smart-id-frontend-seven.vercel.app/login",
+    live: "https://smartid.naitik.site/",
     accent: "skill-purple",
   },
   {
