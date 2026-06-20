@@ -33,7 +33,7 @@ const projects: Project[] = [
       "Interactive 3D scenes & particle systems",
       "Animated event showcases & smooth scroll storytelling",
     ],
-    live: "https://aarunya.in/",
+    live: "https://arunya.naitik.site/",
     accent: "skill-blue",
   },
   {

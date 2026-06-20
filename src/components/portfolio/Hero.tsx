@@ -7,14 +7,27 @@ import {
   useSpring,
 } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import { Github, Linkedin, Mail, MapPin } from "lucide-react";
+import { Github, Linkedin, Mail, MapPin, FileDown } from "lucide-react";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
-const socials = [
+type Social = {
+  icon: typeof Github;
+  href: string;
+  label: string;
+  download?: string;
+};
+
+const socials: Social[] = [
   { icon: Github, href: "https://github.com/Naitikk-J", label: "GitHub" },
   { icon: Linkedin, href: "https://linkedin.com/in/naitik-jain-9290b8324", label: "LinkedIn" },
   { icon: Mail, href: "mailto:Naitikjainjbp@gmail.com", label: "Email" },
+  {
+    icon: FileDown,
+    href: "/Naitik-Jain-Resume.pdf",
+    label: "Download Resume",
+    download: "Naitik-Jain-Resume.pdf",
+  },
 ];
 
 // Individual letter animation for the name
@@ -225,13 +238,17 @@ const Hero = () => {
           <div className="flex items-center gap-6">
             {socials.map((s, i) => {
               const Icon = s.icon;
+              const isExternal = s.href.startsWith("http");
               return (
                 <motion.a
                   key={s.label}
                   href={s.href}
-                  target={s.href.startsWith("http") ? "_blank" : undefined}
-                  rel={s.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                  target={isExternal ? "_blank" : undefined}
+                  rel={isExternal ? "noopener noreferrer" : undefined}
+                  download={s.download}
                   aria-label={s.label}
+                  title={s.label}
+                  data-cursor
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, delay: 0.4 + i * 0.1 }}
