@@ -136,23 +136,24 @@ const Hero = () => {
           </motion.span>
         </motion.h1>
 
-        {/* Title — cycling tagline */}
+        {/* Title — cycling tagline, stacked on mobile, inline on sm+ */}
         <motion.div
           style={{ y: subY }}
-          className="mt-6 flex h-6 items-center justify-center overflow-hidden sm:h-7"
+          className="mt-6 flex flex-col items-center gap-1 px-4 text-center sm:flex-row sm:flex-wrap sm:justify-center sm:gap-2 sm:px-0"
         >
-          <span className="mr-2 text-sm font-medium tracking-[0.15em] text-skill-blue/80 sm:text-base">
-            FULL STACK ENGINEER —
+          <span className="text-[11px] font-medium tracking-[0.18em] text-skill-blue/80 sm:text-sm md:text-base">
+            FULL STACK ENGINEER
           </span>
-          <div className="relative h-6 sm:h-7">
+          <span className="hidden text-skill-blue/40 sm:inline">—</span>
+          <div className="relative h-5 overflow-hidden sm:h-6 md:h-7">
             <AnimatePresence mode="wait">
               <motion.span
                 key={taglineIdx}
-                initial={{ y: 24, opacity: 0 }}
+                initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                exit={{ y: -24, opacity: 0 }}
+                exit={{ y: -20, opacity: 0 }}
                 transition={{ duration: 0.5, ease }}
-                className="block whitespace-nowrap text-sm font-medium tracking-[0.15em] text-skill-blue/80 sm:text-base"
+                className="block whitespace-nowrap text-[11px] font-medium tracking-[0.18em] text-skill-blue/80 sm:text-sm md:text-base"
               >
                 {taglines[taglineIdx]}
               </motion.span>
@@ -190,14 +191,14 @@ const Hero = () => {
           transition={{ duration: 0.5, ease, delay: 0.35 }}
           className="mt-12 flex flex-col items-center gap-8"
         >
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
             <motion.a
               href="#projects"
               data-cursor
               whileHover={{ scale: 1.04, boxShadow: "0 0 50px hsl(0 0% 100% / 0.2)" }}
               whileTap={{ scale: 0.97 }}
               transition={{ type: "spring", stiffness: 400, damping: 17 }}
-              className="group inline-flex items-center gap-2 rounded-full bg-foreground px-7 py-3.5 text-xs font-medium tracking-[0.18em] text-background"
+              className="group inline-flex items-center justify-center gap-2 rounded-full bg-foreground px-6 py-3 text-[11px] font-medium tracking-[0.18em] text-background sm:px-7 sm:py-3.5 sm:text-xs"
             >
               VIEW PROJECTS
               <motion.span
@@ -214,7 +215,7 @@ const Hero = () => {
               whileHover={{ scale: 1.04, borderColor: "hsl(0 0% 40%)" }}
               whileTap={{ scale: 0.97 }}
               transition={{ type: "spring", stiffness: 400, damping: 17 }}
-              className="group relative inline-flex items-center gap-2 rounded-full border border-border/80 px-7 py-3.5 text-xs font-medium tracking-[0.18em] text-muted-foreground hover:text-foreground"
+              className="group relative inline-flex items-center justify-center gap-2 rounded-full border border-border/80 px-6 py-3 text-[11px] font-medium tracking-[0.18em] text-muted-foreground hover:text-foreground sm:px-7 sm:py-3.5 sm:text-xs"
             >
               LET'S CONNECT
             </motion.a>

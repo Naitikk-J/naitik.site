@@ -161,21 +161,21 @@ const About = () => {
             ))}
           </div>
 
-          {/* Highlight cards */}
-          <div className="flex flex-row gap-4 md:col-span-2 md:flex-col md:gap-5">
+          {/* Highlight cards — column on mobile, row of compact cards on sm, column again in sidebar on md+ */}
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 md:col-span-2 md:grid-cols-1 md:gap-5">
             {highlights.map((h, i) => {
               const Icon = h.icon;
               return (
                 <motion.div
                   key={h.label}
                   data-cursor
-                  initial={{ opacity: 0, x: 30, scale: 0.95, rotateX: -15 }}
-                  whileInView={{ opacity: 1, x: 0, scale: 1, rotateX: 0 }}
+                  initial={{ opacity: 0, y: 20, scale: 0.95, rotateX: -15 }}
+                  whileInView={{ opacity: 1, y: 0, scale: 1, rotateX: 0 }}
                   viewport={{ once: true, margin: "-60px" }}
                   transition={{ duration: 0.7, ease, delay: 0.15 + i * 0.1 }}
                   whileHover={{ scale: 1.04, y: -4, rotateX: 4, rotateY: -4 }}
                   style={{ transformStyle: "preserve-3d" }}
-                  className="glass-card flex-1 rounded-2xl p-5"
+                  className="glass-card rounded-2xl p-4 sm:p-5"
                 >
                   <motion.div
                     whileHover={{ rotate: [0, -10, 10, 0], scale: 1.15 }}
@@ -183,10 +183,10 @@ const About = () => {
                   >
                     <Icon size={18} className={`mb-3 text-${h.accent}`} strokeWidth={1.5} />
                   </motion.div>
-                  <p className="text-2xl font-semibold text-foreground tabular-nums">
+                  <p className="text-xl font-semibold text-foreground tabular-nums sm:text-2xl">
                     {h.numeric !== null ? <CountUp to={h.numeric} suffix={h.suffix} /> : h.value}
                   </p>
-                  <p className="mt-1 text-[11px] tracking-[0.12em] text-muted-foreground">{h.label}</p>
+                  <p className="mt-1 text-[10px] tracking-[0.12em] text-muted-foreground sm:text-[11px]">{h.label}</p>
                 </motion.div>
               );
             })}

@@ -39,19 +39,21 @@ const Navbar = () => {
             : "bg-transparent border-b border-transparent"
         }`}
       >
-        <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5 md:px-10 md:py-6">
+        <nav className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-5 sm:px-6 md:px-10 md:py-6">
           <a
             href="#home"
-            className="text-sm font-bold tracking-[0.2em] text-foreground transition-opacity hover:opacity-70"
+            data-cursor
+            className="shrink-0 text-xs font-bold tracking-[0.18em] text-foreground transition-opacity hover:opacity-70 sm:text-sm sm:tracking-[0.2em]"
           >
             Naitik Jain<span className="text-muted-foreground/40">.</span>
           </a>
-          <ul className="hidden items-center gap-8 md:flex lg:gap-12">
+          <ul className="hidden items-center gap-5 md:flex lg:gap-10">
             {links.map((l) => (
               <li key={l.label}>
                 <a
                   href={l.href}
-                  className="group relative text-[11px] font-medium tracking-[0.18em] text-muted-foreground transition-colors duration-300 hover:text-foreground"
+                  data-cursor
+                  className="group relative text-[10px] font-medium tracking-[0.18em] text-muted-foreground transition-colors duration-300 hover:text-foreground lg:text-[11px]"
                 >
                   {l.label}
                   <span className="absolute -bottom-1 left-0 h-px w-full origin-right scale-x-0 bg-foreground transition-transform duration-300 ease-out group-hover:origin-left group-hover:scale-x-100" />

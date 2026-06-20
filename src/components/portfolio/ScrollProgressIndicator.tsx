@@ -86,7 +86,7 @@ const ScrollProgressIndicator = () => {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 1.2, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed right-4 top-1/2 z-40 hidden -translate-y-1/2 flex-col items-end gap-1 md:flex"
+            className="fixed right-4 top-1/2 z-40 hidden -translate-y-1/2 flex-col items-end gap-1 lg:flex"
         >
             {SECTIONS.map((s) => {
                 const isActive = active === s.id;

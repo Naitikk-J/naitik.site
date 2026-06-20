@@ -111,8 +111,8 @@ const Projects = () => {
     if (!section || !pin || !track) return;
 
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const isDesktop = window.matchMedia("(min-width: 768px)").matches;
-    if (prefersReducedMotion || !isDesktop) return;
+    const isLargeScreen = window.matchMedia("(min-width: 1024px)").matches;
+    if (prefersReducedMotion || !isLargeScreen) return;
 
     const ctx = gsap.context(() => {
       const computeDistance = () => Math.max(0, track.scrollWidth - window.innerWidth);
@@ -166,8 +166,8 @@ const Projects = () => {
       id="projects"
       className="relative w-full"
     >
-      {/* Pinned stage (desktop) */}
-      <div ref={pinRef} className="relative hidden h-screen w-full overflow-hidden md:block">
+      {/* Pinned stage (large screens only) */}
+      <div ref={pinRef} className="relative hidden h-screen w-full overflow-hidden lg:block">
         <div className="pointer-events-none absolute inset-0 flex items-start justify-start px-6 pt-24 md:px-12 md:pt-28">
           <div>
             <motion.span
@@ -300,8 +300,8 @@ const Projects = () => {
         </div>
       </div>
 
-      {/* Mobile / reduced-motion fallback — vertical list */}
-      <div className="px-6 py-24 md:hidden">
+      {/* Mobile / tablet / reduced-motion fallback — vertical list */}
+      <div className="px-6 py-24 md:py-28 lg:hidden">
         <div className="mx-auto max-w-5xl">
           <span className="mb-4 block text-[10px] font-medium tracking-[0.3em] text-muted-foreground">
             — PROJECTS
@@ -310,7 +310,7 @@ const Projects = () => {
             Systems built for <span className="gradient-text">real-world impact</span>.
           </h2>
 
-          <div className="grid gap-6">
+          <div className="grid gap-6 sm:grid-cols-2">
             {projects.map((p) => (
               <motion.article
                 key={p.name}
@@ -318,7 +318,7 @@ const Projects = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-60px" }}
                 transition={{ duration: 0.7, ease }}
-                className="project-card rounded-2xl border border-border/60 bg-card/30 p-6 backdrop-blur-sm"
+                className="project-card flex flex-col rounded-2xl border border-border/60 bg-card/30 p-6 backdrop-blur-sm"
               >
                 <div className="mb-3 flex items-center gap-3">
                   <span className={`h-2 w-2 rounded-full bg-${p.accent}`} />

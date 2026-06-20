@@ -59,8 +59,8 @@ const Skills = () => {
     if (!section || !stage) return;
 
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const isDesktop = window.matchMedia("(min-width: 768px)").matches;
-    if (prefersReducedMotion || !isDesktop) return;
+    const isLargeScreen = window.matchMedia("(min-width: 1024px)").matches;
+    if (prefersReducedMotion || !isLargeScreen) return;
 
     const cards = cardsRef.current.filter((c): c is HTMLDivElement => c !== null);
 
@@ -113,7 +113,7 @@ const Skills = () => {
       id="skills"
       className="relative w-full overflow-hidden px-6 py-24 md:py-32 lg:py-40"
     >
-      <div ref={stageRef} className="relative flex min-h-screen w-full items-center justify-center">
+      <div ref={stageRef} className="relative flex w-full items-center justify-center lg:min-h-screen">
         <div className="pointer-events-none absolute left-[10%] top-[20%] h-[30vmin] w-[30vmin] rounded-full bg-skill-purple/[0.02] blur-[80px] animate-float-orb" />
         <div className="pointer-events-none absolute right-[5%] bottom-[20%] h-[25vmin] w-[25vmin] rounded-full bg-skill-green/[0.02] blur-[70px] animate-float-orb-reverse" />
 
@@ -138,8 +138,8 @@ const Skills = () => {
               A toolkit refined over <span className="shimmer-text">years of craft</span>.
             </motion.h2>
 
-            {/* Pinned-section progress bar (desktop only) */}
-            <div className="mt-6 hidden h-px w-full origin-left bg-border/40 md:block">
+            {/* Pinned-section progress bar (large screens only) */}
+            <div className="mt-6 hidden h-px w-full origin-left bg-border/40 lg:block">
               <div
                 ref={progressRef}
                 className="h-full w-full origin-left bg-gradient-to-r from-skill-blue via-skill-purple to-skill-green"
