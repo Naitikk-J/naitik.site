@@ -342,3 +342,41 @@ body::before {
   transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
               opacity 0.3s ease;
 }
+
+/* ─── Custom cursor: hide native pointer when enabled ─── */
+body.has-custom-cursor,
+body.has-custom-cursor * {
+  cursor: none !important;
+}
+
+.custom-cursor-dot,
+.custom-cursor-ring {
+  transition: opacity 0.3s ease;
+}
+
+/* ─── Horizontal-scroll project track ─── */
+.h-scroll-track {
+  display: flex;
+  flex-wrap: nowrap;
+  will-change: transform;
+}
+
+.h-scroll-panel {
+  flex: 0 0 auto;
+}
+
+/* ─── 3D card tilt base ─── */
+.tilt-card {
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.tilt-card-inner {
+  transform: translateZ(20px);
+}
+
+/* ─── Scramble text monospace anchor ─── */
+.scramble-char {
+  display: inline-block;
+  font-variant-numeric: tabular-nums;
+}

@@ -1,6 +1,7 @@
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { motion, useScroll, useTransform, useInView } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 import { Mail, Github, Linkedin, ArrowUpRight } from "lucide-react";
+import { useMagneticTilt } from "@/hooks/useMagneticTilt";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -25,6 +26,113 @@ const contactLinks = [
   },
 ];
 
+const SCRAMBLE_CHARS = "!<>-_\\/[]{}—=+*^?#________";
+
+/**
+ * Cycles random characters per letter until it converges on the target text.
+ * Triggered when the element first scrolls into view.
+ */
+const ScrambleText = ({ text, className = "" }: { text: string; className?: string }) => {
+  const ref = useRef<HTMLSpanElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-80px" });
+  const [output, setOutput] = useState(text);
+
+  useEffect(() => {
+    if (!inView) return;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) {
+      setOutput(text);
+      return;
+    }
+
+    let frame = 0;
+    const queue: { from: string; to: string; start: number; end: number; char?: string }[] = [];
+    const oldText = output;
+    const length = Math.max(oldText.length, text.length);
+    for (let i = 0; i < length; i++) {
+      const from = oldText[i] || "";
+      const to = text[i] || "";
+      const start = Math.floor(Math.random() * 40);
+      const end = start + Math.floor(Math.random() * 40) + 10;
+      queue.push({ from, to, start, end });
+    }
+
+    let rafId: number;
+    const update = () => {
+      let result = "";
+      let complete = 0;
+      for (let i = 0; i < queue.length; i++) {
+        const q = queue[i];
+        if (frame >= q.end) {
+          complete++;
+          result += q.to;
+        } else if (frame >= q.start) {
+          if (!q.char || Math.random() < 0.28) {
+            q.char = SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)];
+          }
+          result += q.char;
+        } else {
+          result += q.from;
+        }
+      }
+      setOutput(result);
+      if (complete < queue.length) {
+        frame++;
+        rafId = requestAnimationFrame(update);
+      }
+    };
+    rafId = requestAnimationFrame(update);
+    return () => cancelAnimationFrame(rafId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inView, text]);
+
+  return (
+    <span ref={ref} className={className} aria-label={text}>
+      {output}
+    </span>
+  );
+};
+
+const ContactCard = ({
+  icon: Icon,
+  label,
+  value,
+  href,
+}: {
+  icon: typeof Mail;
+  label: string;
+  value: string;
+  href: string;
+}) => {
+  const tiltRef = useMagneticTilt<HTMLAnchorElement>({ maxTilt: 5, maxOffset: 5 });
+  return (
+    <a
+      ref={tiltRef}
+      href={href}
+      target={href.startsWith("http") ? "_blank" : undefined}
+      rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
+      data-cursor
+      className="tilt-card group flex items-center gap-4 rounded-xl border border-border/60 bg-card/30 px-6 py-4 backdrop-blur-sm transition-colors duration-300 hover:border-border hover:bg-card/60"
+    >
+      <Icon
+        size={18}
+        className="text-muted-foreground transition-colors group-hover:text-foreground"
+        strokeWidth={1.5}
+      />
+      <div className="text-left">
+        <p className="text-[10px] tracking-[0.15em] text-muted-foreground/60">
+          {label.toUpperCase()}
+        </p>
+        <p className="text-sm text-foreground">{value}</p>
+      </div>
+      <ArrowUpRight
+        size={14}
+        className="ml-auto text-muted-foreground/40 transition-all duration-300 group-hover:text-foreground group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+      />
+    </a>
+  );
+};
+
 const Contact = () => {
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
@@ -32,7 +140,7 @@ const Contact = () => {
     offset: ["start end", "end start"],
   });
 
-  const headingX = useTransform(scrollYProgress, [0, 0.4], [-60, 0]);
+  const headingY = useTransform(scrollYProgress, [0, 1], [80, -40]);
   const headingOpacity = useTransform(scrollYProgress, [0, 0.25, 0.9, 1], [0, 1, 1, 0.6]);
 
   return (
@@ -43,15 +151,17 @@ const Contact = () => {
     >
       <div className="mx-auto max-w-3xl text-center">
         <motion.div
-          style={{ x: headingX, opacity: headingOpacity }}
+          style={{ y: headingY, opacity: headingOpacity }}
           className="mb-12 md:mb-16"
         >
           <span className="mb-4 block text-[10px] font-medium tracking-[0.3em] text-muted-foreground">
             — LET'S CONNECT
           </span>
           <h2 className="text-balance text-3xl font-semibold tracking-tight text-foreground sm:text-4xl md:text-5xl">
-            Got a challenge?{" "}
-            <span className="gradient-text">Let's build</span>.
+            <ScrambleText text="Got a challenge?" className="scramble-char" />{" "}
+            <span className="gradient-text">
+              <ScrambleText text="Let's build." />
+            </span>
           </h2>
         </motion.div>
 
@@ -66,7 +176,6 @@ const Contact = () => {
           and blockchain. Open to internships, collaborations, and challenging engineering problems.
         </motion.p>
 
-        {/* Contact cards */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -74,37 +183,11 @@ const Contact = () => {
           transition={{ duration: 0.7, ease, delay: 0.2 }}
           className="mx-auto flex flex-col gap-4 sm:flex-row sm:justify-center"
         >
-          {contactLinks.map((c) => {
-            const Icon = c.icon;
-            return (
-              <a
-                key={c.label}
-                href={c.href}
-                target={c.href.startsWith("http") ? "_blank" : undefined}
-                rel={c.href.startsWith("http") ? "noopener noreferrer" : undefined}
-                className="group flex items-center gap-4 rounded-xl border border-border/60 bg-card/30 px-6 py-4 backdrop-blur-sm transition-all duration-300 hover:border-border hover:bg-card/60 hover:-translate-y-1"
-              >
-                <Icon
-                  size={18}
-                  className="text-muted-foreground transition-colors group-hover:text-foreground"
-                  strokeWidth={1.5}
-                />
-                <div className="text-left">
-                  <p className="text-[10px] tracking-[0.15em] text-muted-foreground/60">
-                    {c.label.toUpperCase()}
-                  </p>
-                  <p className="text-sm text-foreground">{c.value}</p>
-                </div>
-                <ArrowUpRight
-                  size={14}
-                  className="ml-auto text-muted-foreground/40 transition-all duration-300 group-hover:text-foreground group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-                />
-              </a>
-            );
-          })}
+          {contactLinks.map((c) => (
+            <ContactCard key={c.label} {...c} />
+          ))}
         </motion.div>
 
-        {/* CTA Button */}
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
@@ -114,6 +197,7 @@ const Contact = () => {
         >
           <a
             href="mailto:Naitikjainjbp@gmail.com"
+            data-cursor
             className="group inline-flex items-center gap-2 rounded-full bg-foreground px-8 py-3.5 text-xs font-medium tracking-[0.18em] text-background transition-all duration-300 hover:bg-foreground/90 hover:shadow-[0_0_50px_hsl(0_0%_100%/0.2)]"
           >
             SAY HELLO

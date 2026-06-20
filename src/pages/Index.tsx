@@ -8,7 +8,9 @@ const Skills = lazy(() => import("@/components/portfolio/Skills"));
 const Projects = lazy(() => import("@/components/portfolio/Projects"));
 const Experience = lazy(() => import("@/components/portfolio/Experience"));
 const Contact = lazy(() => import("@/components/portfolio/Contact"));
-const CubesBackground = lazy(() => import("@/components/portfolio/CubesBackground"));
+const ScrollVideoBackground = lazy(() => import("@/components/portfolio/ScrollVideoBackground"));
+const CustomCursor = lazy(() => import("@/components/portfolio/CustomCursor"));
+const ScrollProgressIndicator = lazy(() => import("@/components/portfolio/ScrollProgressIndicator"));
 
 const Divider = () => (
     <div className="mx-auto max-w-5xl px-6">
@@ -19,21 +21,12 @@ const Divider = () => (
 const Index = () => {
     useLenis();
     const [showDeferred, setShowDeferred] = useState(false);
-    const [showCubes, setShowCubes] = useState(false);
+    const [showBackground, setShowBackground] = useState(false);
 
     useEffect(() => {
-        const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-        const largeScreen = window.matchMedia("(min-width: 1024px)").matches;
-        const connection = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
-        const saveData = connection?.saveData ?? false;
-
-        const enableCubes = !prefersReducedMotion && largeScreen && !saveData;
-
         const schedule = () => {
             setShowDeferred(true);
-            if (enableCubes) {
-                setShowCubes(true);
-            }
+            setShowBackground(true);
         };
 
         const win = window as Window & {
@@ -60,10 +53,18 @@ const Index = () => {
 
     return (
         <>
-            {/* Fixed 3D cubes background */}
-            {showCubes && (
+            {/* Fixed scroll-scrubbed video background */}
+            {showBackground && (
                 <Suspense fallback={null}>
-                    <CubesBackground />
+                    <ScrollVideoBackground />
+                </Suspense>
+            )}
+
+            {/* Universal scroll choreography */}
+            {showDeferred && (
+                <Suspense fallback={null}>
+                    <CustomCursor />
+                    <ScrollProgressIndicator />
                 </Suspense>
             )}
 

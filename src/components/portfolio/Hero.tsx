@@ -1,5 +1,12 @@
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import {
+  AnimatePresence,
+  motion,
+  useScroll,
+  useTransform,
+  useVelocity,
+  useSpring,
+} from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 import { Github, Linkedin, Mail, MapPin } from "lucide-react";
 
 const ease = [0.22, 1, 0.36, 1] as const;
@@ -20,15 +27,38 @@ const Hero = () => {
     offset: ["start start", "end start"],
   });
 
-  const titleY = useTransform(scrollYProgress, [0, 1], [0, -200]);
-  const subY = useTransform(scrollYProgress, [0, 1], [0, -140]);
-  const badgeY = useTransform(scrollYProgress, [0, 1], [0, -240]);
+  // Aggressive scale + lift for the name: starts at 1.0 huge, shrinks to 0.42
+  // and rises toward the navbar as user scrolls past the hero.
+  const titleScale = useTransform(scrollYProgress, [0, 1], [1, 0.42]);
+  const titleY = useTransform(scrollYProgress, [0, 1], [0, -360]);
+  const subY = useTransform(scrollYProgress, [0, 1], [0, -180]);
+  const badgeY = useTransform(scrollYProgress, [0, 1], [0, -260]);
   const ctaY = useTransform(scrollYProgress, [0, 1], [0, -90]);
   const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [1, 0.3, 0]);
-  const scale = useTransform(scrollYProgress, [0, 1], [1, 0.88]);
   const glowScale = useTransform(scrollYProgress, [0, 1], [1, 1.8]);
   const glowOpacity = useTransform(scrollYProgress, [0, 1], [1, 0]);
   const orbRotate = useTransform(scrollYProgress, [0, 1], [0, 45]);
+
+  // Scroll-velocity skew: the name leans into fast scroll motion. We clamp the
+  // velocity so a thrown wheel doesn't shear the text into oblivion.
+  const { scrollY } = useScroll();
+  const rawVelocity = useVelocity(scrollY);
+  const smoothVelocity = useSpring(rawVelocity, { damping: 50, stiffness: 400 });
+  const velocitySkew = useTransform(smoothVelocity, [-2000, 0, 2000], [-6, 0, 6]);
+
+  // Animated tagline cycler so it never reads as static.
+  const taglines = [
+    "AI · BLOCKCHAIN · REAL-TIME SYSTEMS",
+    "BUILDING AT THE EDGE OF THE STACK",
+    "ENGINEERING SYSTEMS THAT SCALE",
+  ];
+  const [taglineIdx, setTaglineIdx] = useState(0);
+  useEffect(() => {
+    const id = window.setInterval(() => {
+      setTaglineIdx((i) => (i + 1) % taglines.length);
+    }, 3200);
+    return () => window.clearInterval(id);
+  }, [taglines.length]);
 
   return (
     <section
@@ -57,7 +87,7 @@ const Hero = () => {
       />
 
       <motion.div
-        style={{ opacity, scale }}
+        style={{ opacity }}
         className="relative z-10 mx-auto flex max-w-6xl flex-col items-center text-center"
       >
         {/* Status badge */}
@@ -75,10 +105,10 @@ const Hero = () => {
           OPEN TO OPPORTUNITIES — 2026
         </motion.span>
 
-        {/* Name — letter-by-letter reveal */}
+        {/* Name — letter-by-letter reveal, scales + lifts + skews on scroll */}
         <motion.h1
-          style={{ y: titleY }}
-          className="text-balance text-6xl font-semibold leading-[0.95] tracking-tight text-foreground sm:text-7xl md:text-8xl lg:text-9xl"
+          style={{ y: titleY, scale: titleScale, skewY: velocitySkew }}
+          className="text-balance text-6xl font-semibold leading-[0.95] tracking-tight text-foreground will-change-transform sm:text-7xl md:text-8xl lg:text-9xl"
         >
           {nameLetters.map((letter, i) => (
             <motion.span
@@ -106,16 +136,29 @@ const Hero = () => {
           </motion.span>
         </motion.h1>
 
-        {/* Title */}
-        <motion.p
+        {/* Title — cycling tagline */}
+        <motion.div
           style={{ y: subY }}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, ease, delay: 0.2 }}
-          className="mt-6 text-sm font-medium tracking-[0.15em] text-skill-blue/80 sm:text-base"
+          className="mt-6 flex h-6 items-center justify-center overflow-hidden sm:h-7"
         >
-          FULL STACK ENGINEER — AI · BLOCKCHAIN · REAL-TIME SYSTEMS
-        </motion.p>
+          <span className="mr-2 text-sm font-medium tracking-[0.15em] text-skill-blue/80 sm:text-base">
+            FULL STACK ENGINEER —
+          </span>
+          <div className="relative h-6 sm:h-7">
+            <AnimatePresence mode="wait">
+              <motion.span
+                key={taglineIdx}
+                initial={{ y: 24, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: -24, opacity: 0 }}
+                transition={{ duration: 0.5, ease }}
+                className="block whitespace-nowrap text-sm font-medium tracking-[0.15em] text-skill-blue/80 sm:text-base"
+              >
+                {taglines[taglineIdx]}
+              </motion.span>
+            </AnimatePresence>
+          </div>
+        </motion.div>
 
         {/* Tagline */}
         <motion.p
@@ -150,6 +193,7 @@ const Hero = () => {
           <div className="flex items-center gap-3">
             <motion.a
               href="#projects"
+              data-cursor
               whileHover={{ scale: 1.04, boxShadow: "0 0 50px hsl(0 0% 100% / 0.2)" }}
               whileTap={{ scale: 0.97 }}
               transition={{ type: "spring", stiffness: 400, damping: 17 }}
@@ -166,6 +210,7 @@ const Hero = () => {
             </motion.a>
             <motion.a
               href="#contact"
+              data-cursor
               whileHover={{ scale: 1.04, borderColor: "hsl(0 0% 40%)" }}
               whileTap={{ scale: 0.97 }}
               transition={{ type: "spring", stiffness: 400, damping: 17 }}

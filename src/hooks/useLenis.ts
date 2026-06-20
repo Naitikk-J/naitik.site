@@ -1,5 +1,18 @@
 import { useEffect } from "react";
 import Lenis from "lenis";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
+
+/**
+ * Module-level Lenis singleton so non-React consumers (e.g. the scroll-driven
+ * video background, GSAP ScrollTriggers) can read the active scroll value
+ * without prop drilling.
+ */
+let lenisInstance: Lenis | null = null;
+
+export const getLenis = (): Lenis | null => lenisInstance;
 
 /**
  * Initializes Lenis smooth scroll globally.
@@ -24,6 +37,13 @@ export const useLenis = () => {
             wheelMultiplier: 1,
             touchMultiplier: 1.5,
         });
+        lenisInstance = lenis;
+
+        // Pipe Lenis ticks into ScrollTrigger so pinned/scrubbed sections
+        // stay perfectly in sync with the eased scroll position.
+        const onLenisScroll = () => ScrollTrigger.update();
+        lenis.on("scroll", onLenisScroll);
+        gsap.ticker.lagSmoothing(0);
 
         let rafId: number;
         const raf = (time: number) => {
@@ -34,7 +54,9 @@ export const useLenis = () => {
 
         return () => {
             cancelAnimationFrame(rafId);
+            lenis.off("scroll", onLenisScroll);
             lenis.destroy();
+            lenisInstance = null;
         };
     }, []);
 };

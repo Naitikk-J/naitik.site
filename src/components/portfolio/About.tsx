@@ -1,14 +1,97 @@
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { motion, useScroll, useTransform, useInView, animate, useMotionValue, useMotionValueEvent } from "framer-motion";
+import { ReactNode, useEffect, useRef, useState } from "react";
 import { GraduationCap, Code, Brain } from "lucide-react";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
 const highlights = [
-  { icon: Code, value: "8+", label: "Full-Stack Apps Built", accent: "skill-blue" },
-  { icon: Brain, value: "AI", label: "Systems & Analytics", accent: "skill-purple" },
-  { icon: GraduationCap, value: "B.Tech", label: "IT (AI & Robotics)", accent: "skill-green" },
+  { icon: Code, value: "8+", numeric: 8, suffix: "+", label: "Full-Stack Apps Built", accent: "skill-blue" },
+  { icon: Brain, value: "AI", numeric: null, suffix: "", label: "Systems & Analytics", accent: "skill-purple" },
+  { icon: GraduationCap, value: "B.Tech", numeric: null, suffix: "", label: "IT (AI & Robotics)", accent: "skill-green" },
 ];
+
+/**
+ * Counts a number up to `to` once it scrolls into view, then holds.
+ * Falls back to the static value when prefers-reduced-motion is set.
+ */
+const CountUp = ({ to, suffix = "" }: { to: number; suffix?: string }) => {
+  const ref = useRef<HTMLSpanElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-80px" });
+  const motionValue = useMotionValue(0);
+  const [display, setDisplay] = useState("0");
+
+  useMotionValueEvent(motionValue, "change", (v) => {
+    setDisplay(`${Math.round(v as number)}${suffix}`);
+  });
+
+  useEffect(() => {
+    if (!inView) return;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) {
+      setDisplay(`${to}${suffix}`);
+      return;
+    }
+    const controls = animate(motionValue, to, { duration: 1.4, ease });
+    return () => controls.stop();
+  }, [inView, motionValue, suffix, to]);
+
+  return <span ref={ref}>{display}</span>;
+};
+
+/**
+ * Splits text into words and reveals each on scroll-into-view with a stagger.
+ * Accepts ReactNode children so emphasized spans stay intact (rare, but
+ * for our copy each emphasized phrase is wrapped in its own word group).
+ */
+const RevealWords = ({ children, delay = 0 }: { children: ReactNode; delay?: number }) => {
+  return (
+    <motion.span
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ staggerChildren: 0.035, delayChildren: delay }}
+      className="inline"
+    >
+      {wordize(children)}
+    </motion.span>
+  );
+};
+
+const wordVariants = {
+  hidden: { opacity: 0, y: 22, filter: "blur(6px)" },
+  visible: { opacity: 1, y: 0, filter: "blur(0px)", transition: { duration: 0.65, ease } },
+};
+
+/**
+ * Recursively walks a ReactNode tree and wraps every word in an animated
+ * span so we get per-word stagger even through nested <span> emphasis.
+ */
+function wordize(node: ReactNode): ReactNode {
+  if (typeof node === "string") {
+    return node.split(/(\s+)/).map((token, i) => {
+      if (token.trim() === "") return token;
+      return (
+        <motion.span
+          key={i}
+          variants={wordVariants}
+          className="inline-block"
+          style={{ willChange: "transform, opacity, filter" }}
+        >
+          {token}
+        </motion.span>
+      );
+    });
+  }
+  if (Array.isArray(node)) return node.map((n, i) => <span key={i}>{wordize(n)}</span>);
+  if (typeof node === "object" && node && "props" in node) {
+    const element = node as React.ReactElement<{ children?: ReactNode }>;
+    return {
+      ...element,
+      props: { ...element.props, children: wordize(element.props.children) },
+    };
+  }
+  return node;
+}
 
 const About = () => {
   const ref = useRef<HTMLElement>(null);
@@ -50,14 +133,8 @@ const About = () => {
         </motion.div>
 
         <div className="grid gap-12 md:grid-cols-5 md:gap-16">
-          {/* Bio */}
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.9, ease }}
-            className="md:col-span-3"
-          >
+          {/* Bio — word-by-word reveal */}
+          <div className="md:col-span-3">
             {[
               <>
                 I'm a <span className="text-foreground font-medium">B.Tech IT (AI & Robotics)</span> student
@@ -75,18 +152,14 @@ const About = () => {
                 always the same: <span className="text-foreground">scalable, efficient, impactful products</span>.
               </>,
             ].map((content, i) => (
-              <motion.p
+              <p
                 key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-40px" }}
-                transition={{ duration: 0.7, ease, delay: i * 0.12 }}
                 className={`${i > 0 ? "mt-5" : ""} text-base font-light leading-[1.85] text-muted-foreground sm:text-lg`}
               >
-                {content}
-              </motion.p>
+                <RevealWords delay={i * 0.1}>{content}</RevealWords>
+              </p>
             ))}
-          </motion.div>
+          </div>
 
           {/* Highlight cards */}
           <div className="flex flex-row gap-4 md:col-span-2 md:flex-col md:gap-5">
@@ -95,20 +168,24 @@ const About = () => {
               return (
                 <motion.div
                   key={h.label}
-                  initial={{ opacity: 0, x: 30, scale: 0.95 }}
-                  whileInView={{ opacity: 1, x: 0, scale: 1 }}
+                  data-cursor
+                  initial={{ opacity: 0, x: 30, scale: 0.95, rotateX: -15 }}
+                  whileInView={{ opacity: 1, x: 0, scale: 1, rotateX: 0 }}
                   viewport={{ once: true, margin: "-60px" }}
                   transition={{ duration: 0.7, ease, delay: 0.15 + i * 0.1 }}
-                  whileHover={{ scale: 1.03, y: -3 }}
+                  whileHover={{ scale: 1.04, y: -4, rotateX: 4, rotateY: -4 }}
+                  style={{ transformStyle: "preserve-3d" }}
                   className="glass-card flex-1 rounded-2xl p-5"
                 >
                   <motion.div
-                    whileHover={{ rotate: [0, -10, 10, 0] }}
+                    whileHover={{ rotate: [0, -10, 10, 0], scale: 1.15 }}
                     transition={{ duration: 0.5 }}
                   >
                     <Icon size={18} className={`mb-3 text-${h.accent}`} strokeWidth={1.5} />
                   </motion.div>
-                  <p className="text-2xl font-semibold text-foreground">{h.value}</p>
+                  <p className="text-2xl font-semibold text-foreground tabular-nums">
+                    {h.numeric !== null ? <CountUp to={h.numeric} suffix={h.suffix} /> : h.value}
+                  </p>
                   <p className="mt-1 text-[11px] tracking-[0.12em] text-muted-foreground">{h.label}</p>
                 </motion.div>
               );
