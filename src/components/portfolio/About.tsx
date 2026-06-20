@@ -1,13 +1,13 @@
 import { motion, useScroll, useTransform, useInView, animate, useMotionValue, useMotionValueEvent } from "framer-motion";
 import { ReactNode, useEffect, useRef, useState } from "react";
-import { GraduationCap, Code, Brain } from "lucide-react";
+import { GraduationCap, Code, Trophy } from "lucide-react";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
 const highlights = [
-  { icon: Code, value: "8+", numeric: 8, suffix: "+", label: "Full-Stack Apps Built", accent: "skill-blue" },
-  { icon: Brain, value: "AI", numeric: null, suffix: "", label: "Systems & Analytics", accent: "skill-purple" },
-  { icon: GraduationCap, value: "B.Tech", numeric: null, suffix: "", label: "IT (AI & Robotics)", accent: "skill-green" },
+  { icon: Code, value: "8+", numeric: 8, suffix: "+", label: "Apps Deployed", accent: "skill-blue" },
+  { icon: Trophy, value: "6+", numeric: 6, suffix: "+", label: "Hackathons Shipped", accent: "skill-yellow" },
+  { icon: GraduationCap, value: "B.Tech", numeric: null, suffix: "", label: "IT — AI & Robotics", accent: "skill-green" },
 ];
 
 /**
@@ -137,19 +137,24 @@ const About = () => {
           <div className="md:col-span-3">
             {[
               <>
-                I'm a <span className="text-foreground font-medium">B.Tech IT (AI & Robotics)</span> student
-                at MITS Gwalior with deep focus on full-stack, blockchain, and real-time systems.
+                <span className="text-foreground font-medium">Student who ships.</span> B.Tech IT
+                (AI & Robotics) at MITS Gwalior — 6+ hackathons, 8+ deployed apps, and a track
+                record of building full-stack systems that real users actually use.
               </>,
               <>
-                I've built high-performance applications spanning{" "}
-                <span className="text-foreground">3D web platforms</span>,{" "}
-                <span className="text-foreground">decentralized safety systems</span>, and{" "}
-                <span className="text-foreground">real-time collaborative tools</span> — winning
-                national-level hackathons along the way.
+                My work spans <span className="text-foreground">MERN</span>,{" "}
+                <span className="text-foreground">GenAI</span>,{" "}
+                <span className="text-foreground">blockchain</span>, and{" "}
+                <span className="text-foreground">3D web</span> — from AES-encrypted APIs and
+                WebSocket real-time engines to Solidity smart contracts and Three.js scenes.
+                National-level hackathon winner and multi-time finalist.
               </>,
               <>
-                My foundation sits on JavaScript, React, and backend engineering — but the goal is
-                always the same: <span className="text-foreground">scalable, efficient, impactful products</span>.
+                Right now I'm levelling up in{" "}
+                <span className="text-foreground">DevOps</span>,{" "}
+                <span className="text-foreground">system design</span>, and{" "}
+                <span className="text-foreground">React Native mobile</span> — building toward
+                scalable, production-grade systems.
               </>,
             ].map((content, i) => (
               <p

@@ -9,7 +9,7 @@ const experience = [
   {
     icon: Users,
     role: "Technical Co-Head",
-    org: "AI Club, MITS",
+    org: "AI Club, MITS Gwalior",
     period: "2024 — Present",
     accent: "skill-blue",
   },
@@ -17,16 +17,17 @@ const experience = [
     icon: Zap,
     role: "Technical Member",
     org: "GeeksforGeeks Student Chapter, MITS",
-    period: "Active",
+    period: "2024 — Present",
     accent: "skill-green",
   },
 ];
 
 const achievements = [
   { icon: Trophy, text: "Winner — Code Coalescence Hackathon", accent: "skill-yellow" },
-  { icon: Award, text: "Finalist — HackSagon 2025 & 2026, IIIT Gwalior", accent: "skill-orange" },
+  { icon: Award, text: "Finalist — HackSagon 2026, IIIT Gwalior (TrackMate)", accent: "skill-orange" },
+  { icon: Award, text: "Finalist — HackSagon 2025, IIIT Gwalior (CRX)", accent: "skill-orange" },
   { icon: Rocket, text: "Built & deployed 8+ full-stack applications", accent: "skill-blue" },
-  { icon: Zap, text: "Strong problem-solving & system design", accent: "skill-purple" },
+  { icon: Zap, text: "6+ hackathons shipped across MERN, GenAI, blockchain & 3D web", accent: "skill-purple" },
 ];
 
 const education = {

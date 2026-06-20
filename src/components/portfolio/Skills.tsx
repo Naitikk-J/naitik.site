@@ -12,19 +12,25 @@ const skillCategories = [
     title: "Languages",
     color: "bg-skill-green",
     borderHover: "hover:border-skill-green/30",
-    items: ["C++", "JavaScript (ES6+)", "Python", "TypeScript"],
+    items: ["C++", "JavaScript (ES6+)", "TypeScript", "Python"],
   },
   {
     title: "Frontend / Mobile",
     color: "bg-skill-blue",
     borderHover: "hover:border-skill-blue/30",
-    items: ["React", "React Native", "Three.js", "Tailwind CSS", "Vite"],
+    items: ["React", "React Native", "Three.js / WebGL", "Tailwind CSS", "Vite"],
   },
   {
     title: "Backend & APIs",
     color: "bg-skill-orange",
     borderHover: "hover:border-skill-orange/30",
-    items: ["Node.js", "Express.js", "Socket.io", "REST APIs", "Redis", "JWT Auth"],
+    items: ["Node.js", "Express.js", "Socket.io", "REST APIs", "Redis", "JWT Auth", "System Design"],
+  },
+  {
+    title: "GenAI & AI",
+    color: "bg-skill-cyan",
+    borderHover: "hover:border-skill-cyan/30",
+    items: ["LLM API Integration", "OpenAI", "Gemini", "Prompt Engineering", "AI App Dev"],
   },
   {
     title: "Database & Cloud",
@@ -33,16 +39,16 @@ const skillCategories = [
     items: ["MongoDB", "PostgreSQL", "Firebase", "Supabase", "AWS S3"],
   },
   {
-    title: "Blockchain",
-    color: "bg-skill-yellow",
-    borderHover: "hover:border-skill-yellow/30",
-    items: ["Ethereum", "Solidity", "Hardhat", "Web3.js"],
-  },
-  {
-    title: "Tools",
+    title: "DevOps",
     color: "bg-skill-green",
     borderHover: "hover:border-skill-green/30",
-    items: ["Git", "Docker", "Postman", "Vercel", "Render", "GitHub Actions"],
+    items: ["Docker", "Kubernetes", "GitHub Actions", "Vercel", "Render", "Postman", "Git"],
+  },
+  {
+    title: "Blockchain & Web3",
+    color: "bg-skill-yellow",
+    borderHover: "hover:border-skill-yellow/30",
+    items: ["Ethereum", "Solidity", "Hardhat", "Web3.js", "MetaMask", "Smart Contracts"],
   },
 ];
 

@@ -1,6 +1,6 @@
 import { motion, useScroll, useTransform, useInView } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import { Mail, Github, Linkedin, ArrowUpRight } from "lucide-react";
+import { Mail, Github, Linkedin, ArrowUpRight, Phone } from "lucide-react";
 import { useMagneticTilt } from "@/hooks/useMagneticTilt";
 
 const ease = [0.22, 1, 0.36, 1] as const;
@@ -11,6 +11,12 @@ const contactLinks = [
     label: "Email",
     value: "Naitikjainjbp@gmail.com",
     href: "mailto:Naitikjainjbp@gmail.com",
+  },
+  {
+    icon: Phone,
+    label: "Phone",
+    value: "+91 74709 36868",
+    href: "tel:+917470936868",
   },
   {
     icon: Github,
@@ -181,7 +187,7 @@ const Contact = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.7, ease, delay: 0.2 }}
-          className="mx-auto flex flex-col gap-4 sm:flex-row sm:justify-center"
+          className="mx-auto grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4"
         >
           {contactLinks.map((c) => (
             <ContactCard key={c.label} {...c} />

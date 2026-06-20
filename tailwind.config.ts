@@ -5,9 +5,10 @@ export default {
   content: ["./pages/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./app/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
   prefix: "",
   safelist: [
-    "bg-skill-green", "bg-skill-yellow", "bg-skill-blue", "bg-skill-orange", "bg-skill-purple",
-    "text-skill-green", "text-skill-yellow", "text-skill-blue", "text-skill-orange", "text-skill-purple",
-    "bg-skill-green/10", "bg-skill-yellow/10", "bg-skill-blue/10", "bg-skill-orange/10", "bg-skill-purple/10",
+    "bg-skill-green", "bg-skill-yellow", "bg-skill-blue", "bg-skill-orange", "bg-skill-purple", "bg-skill-cyan",
+    "text-skill-green", "text-skill-yellow", "text-skill-blue", "text-skill-orange", "text-skill-purple", "text-skill-cyan",
+    "bg-skill-green/10", "bg-skill-yellow/10", "bg-skill-blue/10", "bg-skill-orange/10", "bg-skill-purple/10", "bg-skill-cyan/10",
+    "border-skill-green/30", "border-skill-yellow/30", "border-skill-blue/30", "border-skill-orange/30", "border-skill-purple/30", "border-skill-cyan/30",
   ],
   theme: {
     container: {
@@ -58,6 +59,7 @@ export default {
           blue: "hsl(var(--skill-blue))",
           orange: "hsl(var(--skill-orange))",
           purple: "hsl(var(--skill-purple))",
+          cyan: "hsl(var(--skill-cyan))",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",

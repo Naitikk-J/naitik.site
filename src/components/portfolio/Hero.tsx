@@ -48,9 +48,9 @@ const Hero = () => {
 
   // Animated tagline cycler so it never reads as static.
   const taglines = [
-    "AI · BLOCKCHAIN · REAL-TIME SYSTEMS",
-    "BUILDING AT THE EDGE OF THE STACK",
-    "ENGINEERING SYSTEMS THAT SCALE",
+    "MERN · GENAI · BLOCKCHAIN · 3D WEB",
+    "STUDENT WHO SHIPS",
+    "REAL-TIME SYSTEMS THAT SCALE",
   ];
   const [taglineIdx, setTaglineIdx] = useState(0);
   useEffect(() => {

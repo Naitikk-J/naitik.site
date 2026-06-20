@@ -8,17 +8,30 @@ gsap.registerPlugin(ScrollTrigger);
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
-const projects = [
+type Project = {
+  name: string;
+  subtitle: string;
+  year?: string;
+  badge?: string;
+  description: string;
+  tech: string[];
+  features: string[];
+  live?: string;
+  accent: string;
+};
+
+const projects: Project[] = [
   {
     name: "Aarunya.in",
     subtitle: "3D Interactive Fest Website",
+    year: "2025",
     description:
-      "Immersive 3D website for MITS Gwalior's annual fest using Three.js and React — real-time animations with optimized WebGL rendering hitting smooth 60 FPS.",
-    tech: ["React", "Three.js", "WebGL", "Tailwind"],
+      "MITS Gwalior's annual fest, built with Three.js and React — immersive 3D scenes, particle effects, and animated event showcases, deployed on a custom domain.",
+    tech: ["React", "Three.js", "WebGL", "Tailwind", "Vercel"],
     features: [
-      "Interactive 3D scenes & particle effects",
-      "Optimized rendering pipeline — 60 FPS",
-      "Deployed on Vercel with custom domain",
+      "Optimized WebGL pipeline — smooth 60 FPS across devices",
+      "Interactive 3D scenes & particle systems",
+      "Animated event showcases & smooth scroll storytelling",
     ],
     live: "https://aarunya.in/",
     accent: "skill-blue",
@@ -26,29 +39,30 @@ const projects = [
   {
     name: "TrackMate",
     subtitle: "Decentralized Civic Safety Platform",
+    badge: "HackSagon 2026 Finalist",
     description:
-      "Real-time civic safety system with geofencing, SOS alerts, and AI-based risk prediction — built for safer travel environments with blockchain-backed integrity.",
-    tech: ["React", "Node.js", "Socket.io", "Flutter", "Solidity"],
+      "SIH Travel & Tourism platform with a 4-role architecture — Tourist, Resident, Business, Authority — pairing a React + Socket.IO command dashboard with a Flutter app for every role.",
+    tech: ["React", "Node.js", "Socket.io", "Flutter", "Solidity", "Gemini"],
     features: [
-      "Sub-50ms real-time geofencing",
-      "Offline-first SOS queue via Service Workers",
-      "AI risk prediction — Gemini Analytics",
-      "Blockchain tamper-proof E-FIR logging",
+      "Sub-50ms real-time geofencing across roles",
+      "Offline-first Ghost Queue SOS via Service Workers",
+      "AI Risk Pulse (Gemini Analytics) — predicts danger hotspots 60+ min ahead",
+      "Solidity smart contracts for tamper-proof E-FIR logging",
     ],
-    live: "",
     accent: "skill-green",
   },
   {
     name: "MITS Smart ID Card",
-    subtitle: "Campus Management System",
+    subtitle: "Campus & Hostel Management Suite",
+    year: "2025",
     description:
-      "Full-stack campus management with secure QR-based identity, real-time tracking, and role-based access control — processing thousands of scans daily.",
-    tech: ["React", "Node.js", "Redis", "AWS S3", "Socket.io"],
+      "Full-stack hostel platform covering gate access, attendance, library, elections and admin reporting — secured by AES-256 encrypted QR identity cards.",
+    tech: ["React 19", "Node.js", "Express", "Redis", "Socket.io", "Flutter", "Docker"],
     features: [
-      "AES-256 encrypted QR identity",
-      "Role-based access control (RBAC)",
-      "Real-time admin dashboard",
-      "GPS-based attendance system",
+      "Flutter / React Native mobile scanner with real-time Socket.io live feed",
+      "RBAC across SUPER_ADMIN → Security Guard tiers, JWT + Redis token blacklisting",
+      "GPS geofence attendance, AWS S3 asset pipeline",
+      "Docker + CI/CD pipeline for zero-downtime deploys",
     ],
     live: "https://smart-id-frontend-seven.vercel.app/login",
     accent: "skill-purple",
@@ -56,43 +70,42 @@ const projects = [
   {
     name: "CRX",
     subtitle: "Carbon Credit Exchange",
+    badge: "HackSagon 2025 Finalist · IIIT Gwalior",
     description:
-      "Decentralized carbon credit trading platform on Ethereum — transparent, auditable, and secured by smart contracts.",
-    tech: ["Solidity", "Hardhat", "Web3.js", "React"],
+      "Decentralized carbon credit trading platform on Ethereum — transparent, auditable, and secured by smart contracts with MetaMask wallet integration.",
+    tech: ["Solidity", "Hardhat", "Web3.js", "React", "MetaMask"],
     features: [
-      "Blockchain-based transparent trading",
-      "Smart contract execution",
-      "Secure wallet integration",
+      "Ethereum smart contracts deployed via Hardhat",
+      "MetaMask wallet integration for trader auth",
+      "Transparent on-chain trade ledger",
     ],
-    live: "",
     accent: "skill-yellow",
   },
   {
     name: "ReconnectHub",
     subtitle: "Alumni Networking Platform",
+    badge: "Winner · Code Coalescence",
     description:
-      "MERN-based alumni networking platform with JWT authentication, role-based access, and real-time notification system.",
-    tech: ["MongoDB", "Express", "React", "Node.js"],
+      "MERN-based alumni network with JWT auth, role-based access, and a real-time notification system — won the national-level Code Coalescence hackathon.",
+    tech: ["MongoDB", "Express", "React", "Node.js", "JWT"],
     features: [
-      "JWT authentication flow",
-      "Role-based access control",
-      "Real-time notifications",
+      "JWT authentication with role-based access control",
+      "Real-time notifications via Socket.io",
+      "Alumni directory with search + filters",
     ],
-    live: "",
     accent: "skill-orange",
   },
   {
     name: "AJDraw",
-    subtitle: "Real-Time Drawing App",
+    subtitle: "Real-Time Collaborative Drawing",
     description:
-      "Collaborative canvas application with live multi-user synchronization — event-driven architecture handling concurrent drawing sessions.",
+      "WebSocket-based collaborative canvas with live multi-user sync — event-driven Node.js backend handling concurrent drawing sessions.",
     tech: ["React", "Node.js", "Socket.io"],
     features: [
-      "Real-time collaboration",
-      "Event-driven backend",
-      "Multi-user synchronization",
+      "Multi-user real-time canvas sync",
+      "Event-driven backend architecture",
+      "Lightweight client — runs on low-end devices",
     ],
-    live: "",
     accent: "skill-blue",
   },
 ];
@@ -231,9 +244,22 @@ const Projects = () => {
                 </div>
 
                 <div className="flex-1">
-                  <h3 className="text-3xl font-semibold text-foreground sm:text-4xl">
-                    {p.name}
-                  </h3>
+                  <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+                    <h3 className="text-3xl font-semibold text-foreground sm:text-4xl">
+                      {p.name}
+                    </h3>
+                    {p.year && (
+                      <span className="font-mono text-[11px] tracking-[0.2em] text-muted-foreground/60">
+                        {p.year}
+                      </span>
+                    )}
+                  </div>
+                  {p.badge && (
+                    <span className={`mt-3 inline-flex items-center gap-1.5 rounded-full border border-${p.accent}/30 bg-${p.accent}/10 px-3 py-1 text-[10px] font-medium tracking-[0.15em] text-${p.accent}`}>
+                      <span className={`h-1.5 w-1.5 rounded-full bg-${p.accent}`} />
+                      {p.badge.toUpperCase()}
+                    </span>
+                  )}
                   <p className="mt-4 text-sm font-light leading-relaxed text-muted-foreground sm:text-base">
                     {p.description}
                   </p>
@@ -320,13 +346,26 @@ const Projects = () => {
                 transition={{ duration: 0.7, ease }}
                 className="project-card flex flex-col rounded-2xl border border-border/60 bg-card/30 p-6 backdrop-blur-sm"
               >
-                <div className="mb-3 flex items-center gap-3">
-                  <span className={`h-2 w-2 rounded-full bg-${p.accent}`} />
-                  <span className="text-[10px] font-medium tracking-[0.2em] text-muted-foreground">
-                    {p.subtitle.toUpperCase()}
-                  </span>
+                <div className="mb-3 flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <span className={`h-2 w-2 rounded-full bg-${p.accent}`} />
+                    <span className="text-[10px] font-medium tracking-[0.2em] text-muted-foreground">
+                      {p.subtitle.toUpperCase()}
+                    </span>
+                  </div>
+                  {p.year && (
+                    <span className="font-mono text-[10px] tracking-[0.2em] text-muted-foreground/50">
+                      {p.year}
+                    </span>
+                  )}
                 </div>
                 <h3 className="text-xl font-semibold text-foreground">{p.name}</h3>
+                {p.badge && (
+                  <span className={`mt-2 inline-flex w-fit items-center gap-1.5 rounded-full border border-${p.accent}/30 bg-${p.accent}/10 px-2.5 py-0.5 text-[9px] font-medium tracking-[0.15em] text-${p.accent}`}>
+                    <span className={`h-1 w-1 rounded-full bg-${p.accent}`} />
+                    {p.badge.toUpperCase()}
+                  </span>
+                )}
                 <p className="mt-2 text-[13px] font-light leading-relaxed text-muted-foreground">
                   {p.description}
                 </p>
@@ -345,6 +384,7 @@ const Projects = () => {
                     href={p.live}
                     target="_blank"
                     rel="noopener noreferrer"
+                    data-cursor
                     className="mt-5 inline-flex items-center gap-1.5 text-[11px] font-medium tracking-[0.15em] text-muted-foreground transition-colors hover:text-foreground"
                   >
                     <ExternalLink size={13} />
